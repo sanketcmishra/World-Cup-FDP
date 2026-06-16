@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚽ WC26 Fantasy League</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0b1829; font-family: 'Inter', system-ui, sans-serif; color: #e2eaf8; }
+    /* smooth tap highlight removal on mobile */
+    * { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const PLAYERS = [
+      { name: "Ian",      teams: ["Mexico", "South Africa", "South Korea", "Czechia"] },
+      { name: "Madison",  teams: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"] },
+      { name: "Zach",     teams: ["Brazil", "Morocco", "Haiti", "Scotland"] },
+      { name: "Nick",     teams: ["United States", "Paraguay", "Australia", "Turkey"] },
+      { name: "Ashley",   teams: ["Germany", "Curacao", "Ivory Coast", "Ecuador"] },
+      { name: "Sims",     teams: ["Netherlands", "Japan", "Sweden", "Tunisia"] },
+      { name: "Wandy",    teams: ["Belgium", "Egypt", "Iran", "New Zealand"] },
+      { name: "Emily",    teams: ["Spain", "Cape Verde", "Saudi Arabia", "Uruguay"] },
+      { name: "Derek",    teams: ["France", "Senegal", "Iraq", "Norway"] },
+      { name: "Jourdan",  teams: ["Argentina", "Algeria", "Austria", "Jordan"] },
+      { name: "Sanket",   teams: ["Portugal", "DR Congo", "Uzbekistan", "Colombia"] },
+      { name: "Gadberry", teams: ["England", "Croatia", "Ghana", "Panama"] },
+    ];
+
+    // ── UPDATE THIS SECTION EACH NIGHT ──────────────────────────────────────
+    const LAST_UPDATED = "Jun 15 · 11:59 PM ET · Groups A–H MD1 complete";
+
+    const MATCHES = [
+      // June 11 — Group A
+      { date: "Jun 11", home: "Mexico",        away: "South Africa",          hG: 2, aG: 0, hRC: 1, aRC: 2 },
+      { date: "Jun 11", home: "South Korea",   away: "Czechia",               hG: 2, aG: 1, hRC: 0, aRC: 0 },
+      // June 12 — Groups B & D
+      { date: "Jun 12", home: "Canada",        away: "Bosnia and Herzegovina",hG: 1, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 12", home: "United States", away: "Paraguay",              hG: 4, aG: 1, hRC: 0, aRC: 0 },
+      // June 13 — Groups B, C, D
+      { date: "Jun 13", home: "Switzerland",   away: "Qatar",                 hG: 1, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 13", home: "Brazil",        away: "Morocco",               hG: 1, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 13", home: "Scotland",      away: "Haiti",                 hG: 1, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 13", home: "Australia",     away: "Turkey",                hG: 2, aG: 0, hRC: 0, aRC: 0 },
+      // June 14 — Groups E & F
+      { date: "Jun 14", home: "Germany",       away: "Curacao",               hG: 7, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 14", home: "Netherlands",   away: "Japan",                 hG: 2, aG: 2, hRC: 0, aRC: 0 },
+      { date: "Jun 14", home: "Ivory Coast",   away: "Ecuador",               hG: 1, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 14", home: "Sweden",        away: "Tunisia",               hG: 5, aG: 1, hRC: 0, aRC: 0 },
+      // June 15 — Groups G & H
+      { date: "Jun 15", home: "Spain",         away: "Cape Verde",            hG: 0, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 15", home: "Belgium",       away: "Egypt",                 hG: 1, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 15", home: "Saudi Arabia",  away: "Uruguay",               hG: 1, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 15", home: "Iran",          away: "New Zealand",           hG: 2, aG: 2, hRC: 0, aRC: 0 },
+    ];
+    // ── END UPDATE SECTION ───────────────────────────────────────────────────
+
+    const FLAGS = {
+      "Mexico":"🇲🇽","South Africa":"🇿🇦","South Korea":"🇰🇷","Czechia":"🇨🇿",
+      "Canada":"🇨🇦","Bosnia and Herzegovina":"🇧🇦","Qatar":"🇶🇦","Switzerland":"🇨🇭",
+      "Brazil":"🇧🇷","Morocco":"🇲🇦","Haiti":"🇭🇹","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+      "United States":"🇺🇸","Paraguay":"🇵🇾","Australia":"🇦🇺","Turkey":"🇹🇷",
+      "Germany":"🇩🇪","Curacao":"🇨🇼","Ivory Coast":"🇨🇮","Ecuador":"🇪🇨",
+      "Netherlands":"🇳🇱","Japan":"🇯🇵","Sweden":"🇸🇪","Tunisia":"🇹🇳",
+      "Belgium":"🇧🇪","Egypt":"🇪🇬","Iran":"🇮🇷","New Zealand":"🇳🇿",
+      "Spain":"🇪🇸","Cape Verde":"🇨🇻","Saudi Arabia":"🇸🇦","Uruguay":"🇺🇾",
+      "France":"🇫🇷","Senegal":"🇸🇳","Iraq":"🇮🇶","Norway":"🇳🇴",
+      "Argentina":"🇦🇷","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
+      "Portugal":"🇵🇹","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
+      "England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
+    };
+
+    function calcScores(matchList) {
+      const teamResults = {};
+      for (const m of matchList) {
+        const hR = m.hG > m.aG ? "W" : m.hG === m.aG ? "D" : "L";
+        const aR = m.aG > m.hG ? "W" : m.hG === m.aG ? "D" : "L";
+        const pts = { W:3, D:1, L:0 };
+        if (!teamResults[m.home]) teamResults[m.home] = [];
+        teamResults[m.home].push({ result:hR, pts:pts[hR], redCards:m.hRC, opponent:m.away, date:m.date, score:`${m.hG}–${m.aG}` });
+        if (!teamResults[m.away]) teamResults[m.away] = [];
+        teamResults[m.away].push({ result:aR, pts:pts[aR], redCards:m.aRC, opponent:m.home, date:m.date, score:`${m.aG}–${m.hG}` });
+      }
+      const scores = {}, breakdown = {};
+      for (const player of PLAYERS) {
+        let total = 0;
+        breakdown[player.name] = [];
+        for (const team of player.teams) {
+          for (const r of (teamResults[team] || [])) {
+            const rcPts = r.redCards * -0.5;
+            total += r.pts + rcPts;
+            breakdown[player.name].push({ team, ...r, rcPts });
+          }
+        }
+        scores[player.name] = Math.round(total * 10) / 10;
+      }
+      return { scores, breakdown };
+    }
+
+    function App() {
+      const [selected, setSelected] = useState(null);
+      const { scores, breakdown } = calcScores(MATCHES);
+
+      const ranked = PLAYERS
+        .map(p => ({ ...p, pts: scores[p.name] }))
+        .sort((a, b) => b.pts - a.pts)
+        .map((p, i) => ({ ...p, rank: i + 1 }));
+
+      const medal = r => r===1?"🥇":r===2?"🥈":r===3?"🥉":null;
+      const resColor = r => r==="W"?"#4ade80":r==="D"?"#fbbf24":"#f87171";
+      const resBg = r => r==="W"?"rgba(74,222,128,0.12)":r==="D"?"rgba(251,191,36,0.12)":"rgba(248,113,113,0.12)";
+      const selBreakdown = selected ? breakdown[selected] : [];
+
+      return (
+        <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#0b1829 0%,#132040 60%,#0b1829 100%)"}}>
+
+          {/* Header */}
+          <div style={{background:"linear-gradient(90deg,#b91c2e,#e8501a,#b91c2e)",padding:"18px 20px 14px",textAlign:"center",borderBottom:"3px solid #fbbf24"}}>
+            <div style={{fontSize:11,letterSpacing:4,textTransform:"uppercase",opacity:.8,marginBottom:3}}>FIFA World Cup 2026™</div>
+            <div style={{fontSize:24,fontWeight:800}}>⚽ Fantasy League Tracker</div>
+            <div style={{fontSize:11,opacity:.65,marginTop:5}}>Updated: {LAST_UPDATED}</div>
+          </div>
+
+          <div style={{maxWidth:500,margin:"0 auto",padding:"16px 14px 40px"}}>
+
+            {/* Scoring key */}
+            <div style={{background:"rgba(251,191,36,.08)",border:"1px solid rgba(251,191,36,.2)",borderRadius:10,padding:"10px 14px",fontSize:12,color:"#fbbf24",marginBottom:16,lineHeight:1.5}}>
+              📌 Win = 3 pts &nbsp;·&nbsp; Draw = 1 pt &nbsp;·&nbsp; Loss = 0 &nbsp;·&nbsp; Red Card = −0.5 &nbsp;·&nbsp; Tap a player for breakdown
+            </div>
+
+            {/* Standings */}
+            <div style={{background:"rgba(255,255,255,.05)",borderRadius:14,border:"1px solid rgba(255,255,255,.09)",overflow:"hidden",marginBottom:18}}>
+              <div style={{padding:"11px 16px",background:"rgba(251,191,36,.08)",borderBottom:"1px solid rgba(251,191,36,.15)",fontSize:11,fontWeight:700,letterSpacing:3,textTransform:"uppercase",color:"#fbbf24"}}>
+                Standings
+              </div>
+
+              {ranked.map((p, i) => {
+                const isSel = selected === p.name;
+                return (
+                  <div key={p.name}>
+                    <div
+                      onClick={() => setSelected(isSel ? null : p.name)}
+                      style={{display:"flex",alignItems:"center",padding:"12px 16px",borderBottom:(i<ranked.length-1||isSel)?"1px solid rgba(255,255,255,.06)":"none",cursor:"pointer",background:isSel?"rgba(251,191,36,.07)":"transparent",transition:"background .15s",userSelect:"none"}}
+                    >
+                      <div style={{width:30,textAlign:"center",fontSize:medal(p.rank)?18:13,color:"#6a8ab0",fontWeight:600}}>
+                        {medal(p.rank) || p.rank}
+                      </div>
+                      <div style={{flex:1,marginLeft:10}}>
+                        <div style={{fontSize:15,fontWeight:700,color:isSel?"#fbbf24":"#e2eaf8"}}>{p.name}</div>
+                        <div style={{fontSize:11,color:"#4a6a8a",marginTop:2}}>
+                          {p.teams.map(t=>FLAGS[t]||"🏳").join(" ")} {p.teams.join(" · ")}
+                        </div>
+                      </div>
+                      <div style={{fontSize:22,fontWeight:800,color:p.pts>0?"#fbbf24":"#3a5a7a"}}>{p.pts}</div>
+                      <div style={{fontSize:10,color:"#4a6a8a",marginLeft:3,alignSelf:"flex-end",paddingBottom:1}}>pts</div>
+                    </div>
+
+                    {isSel && (
+                      <div style={{background:"rgba(0,0,0,.2)",borderBottom:"1px solid rgba(255,255,255,.06)"}}>
+                        {selBreakdown.length === 0 ? (
+                          <div style={{padding:"14px 20px",fontSize:12,color:"#4a6a8a"}}>No matches played yet.</div>
+                        ) : selBreakdown.map((e, j) => (
+                          <div key={j} style={{display:"flex",alignItems:"center",padding:"9px 20px",borderTop:j>0?"1px solid rgba(255,255,255,.04)":"none"}}>
+                            <span style={{fontSize:18,marginRight:10}}>{FLAGS[e.team]||"🏳"}</span>
+                            <div style={{flex:1}}>
+                              <div style={{fontSize:13,fontWeight:600}}>{e.team}</div>
+                              <div style={{fontSize:11,color:"#4a6a8a"}}>vs {e.opponent} · {e.date} · {e.score}</div>
+                              {e.redCards>0 && <div style={{fontSize:11,color:"#f87171"}}>🟥 ×{e.redCards} ({e.rcPts} pts)</div>}
+                            </div>
+                            <div style={{display:"flex",alignItems:"center",gap:8}}>
+                              <div style={{padding:"2px 10px",borderRadius:20,fontSize:12,fontWeight:700,background:resBg(e.result),color:resColor(e.result)}}>
+                                {e.result}
+                              </div>
+                              <div style={{fontSize:14,fontWeight:700,color:"#fbbf24",minWidth:28,textAlign:"right"}}>
+                                {(e.pts+e.rcPts)>0?"+":""}{Math.round((e.pts+e.rcPts)*10)/10}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        <div style={{display:"flex",justifyContent:"space-between",padding:"8px 20px 10px",borderTop:"1px solid rgba(255,255,255,.08)",fontSize:12,color:"#6a8ab0"}}>
+                          <span>Total</span>
+                          <span style={{fontWeight:800,color:"#fbbf24",fontSize:15}}>{p.pts} pts</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Match results */}
+            <div style={{background:"rgba(255,255,255,.03)",borderRadius:14,border:"1px solid rgba(255,255,255,.07)",overflow:"hidden"}}>
+              <div style={{padding:"11px 16px",borderBottom:"1px solid rgba(255,255,255,.07)",fontSize:11,fontWeight:700,letterSpacing:3,textTransform:"uppercase",color:"#4a6a8a"}}>
+                Completed Matches
+              </div>
+              {MATCHES.map((m, i) => {
+                const hW = m.hG > m.aG, aW = m.aG > m.hG;
+                return (
+                  <div key={i} style={{display:"flex",alignItems:"center",padding:"9px 16px",borderBottom:i<MATCHES.length-1?"1px solid rgba(255,255,255,.05)":"none",fontSize:12}}>
+                    <div style={{fontSize:10,color:"#3a5a7a",width:38}}>{m.date}</div>
+                    <div style={{flex:1,display:"flex",alignItems:"center",gap:5,justifyContent:"flex-end"}}>
+                      <span style={{fontWeight:hW?700:400,color:hW?"#e2eaf8":"#6a8ab0"}}>{m.home}</span>
+                      <span>{FLAGS[m.home]||"🏳"}</span>
+                    </div>
+                    <div style={{padding:"2px 10px",background:"rgba(255,255,255,.07)",borderRadius:20,fontWeight:700,fontSize:13,letterSpacing:1,margin:"0 8px"}}>
+                      {m.hG}–{m.aG}
+                    </div>
+                    <div style={{flex:1,display:"flex",alignItems:"center",gap:5}}>
+                      <span>{FLAGS[m.away]||"🏳"}</span>
+                      <span style={{fontWeight:aW?700:400,color:aW?"#e2eaf8":"#6a8ab0"}}>{m.away}</span>
+                    </div>
+                    {(m.hRC+m.aRC)>0 && <span style={{fontSize:11}} title="Red cards">🟥</span>}
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
