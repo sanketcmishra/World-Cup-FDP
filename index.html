@@ -33,7 +33,7 @@
     ];
 
     // ── UPDATE THIS SECTION EACH NIGHT ──
-    const LAST_UPDATED = "Jun 17 · 11:59 PM ET · Matchday 1 COMPLETE (all 12 groups)";
+    const LAST_UPDATED = "Jun 18 · 11:59 PM ET · Matchday 2 underway (Groups A & B done)";
 
     const MATCHES = [
       { date: "Jun 11", home: "Mexico",        away: "South Africa",          hG: 2, aG: 0, hRC: 1, aRC: 2 },
@@ -60,61 +60,69 @@
       { date: "Jun 17", home: "England",       away: "Croatia",               hG: 4, aG: 2, hRC: 0, aRC: 0 },
       { date: "Jun 17", home: "Ghana",         away: "Panama",                hG: 1, aG: 0, hRC: 0, aRC: 0 },
       { date: "Jun 17", home: "Colombia",      away: "Uzbekistan",            hG: 3, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 18", home: "Czechia",       away: "South Africa",          hG: 1, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 18", home: "Mexico",        away: "South Korea",           hG: 1, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 18", home: "Switzerland",   away: "Bosnia and Herzegovina",hG: 4, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 18", home: "Canada",        away: "Qatar",                 hG: 6, aG: 0, hRC: 0, aRC: 0 },
     ];
     // ── END UPDATE SECTION ──
 
     const FLAGS = {
       "Mexico":"🇲🇽","South Africa":"🇿🇦","South Korea":"🇰🇷","Czechia":"🇨🇿",
       "Canada":"🇨🇦","Bosnia and Herzegovina":"🇧🇦","Qatar":"🇶🇦","Switzerland":"🇨🇭",
-      "Brazil":"🇧🇷","Morocco":"🇲🇦","Haiti":"🇭🇹","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+      "Brazil":"🇧🇷","Morocco":"🇲🇦","Haiti":"🇭🇹","Scotland":"🏴",
       "United States":"🇺🇸","Paraguay":"🇵🇾","Australia":"🇦🇺","Turkey":"🇹🇷",
       "Germany":"🇩🇪","Curacao":"🇨🇼","Ivory Coast":"🇨🇮","Ecuador":"🇪🇨",
       "Netherlands":"🇳🇱","Japan":"🇯🇵","Sweden":"🇸🇪","Tunisia":"🇹🇳",
-      "Belgium":"🇧🇪","Egypt":"🇪🇬","Iran":"🇮🇷","New Zealand":"🇳🇿",
+      "Belgium":"🇧🇪","Egypt":"🇪🇬","Iran":"🇮🇷","New Zealand":"🇳",
       "Spain":"🇪🇸","Cape Verde":"🇨🇻","Saudi Arabia":"🇸🇦","Uruguay":"🇺🇾",
       "France":"🇫🇷","Senegal":"🇸🇳","Iraq":"🇮🇶","Norway":"🇳🇴",
-      "Argentina":"🇦🇷","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
-      "Portugal":"🇵","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
-      "England":"🏴","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
+      "Argentina":"🇦","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
+      "Portugal":"🇵🇹","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
+      "England":"🏴󠁧","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
     };
 
     function calcScores(matchList) {
-      const teamResults = {}, teamGoals = {};
+      const teamResults = {}, teamGF = {}, teamGA = {};
       for (const m of matchList) {
         const hR = m.hG > m.aG ? "W" : m.hG === m.aG ? "D" : "L";
         const aR = m.aG > m.hG ? "W" : m.hG === m.aG ? "D" : "L";
         const pts = { W:3, D:1, L:0 };
         if (!teamResults[m.home]) teamResults[m.home] = [];
-        teamResults[m.home].push({ result:hR, pts:pts[hR], redCards:m.hRC, opponent:m.away, date:m.date, score:m.hG+"–"+m.aG, goalsFor:m.hG });
-        teamGoals[m.home] = (teamGoals[m.home]||0) + m.hG;
+        teamResults[m.home].push({ result:hR, pts:pts[hR], redCards:m.hRC, opponent:m.away, date:m.date, score:m.hG+"–"+m.aG, goalsFor:m.hG, goalsAgainst:m.aG });
+        teamGF[m.home] = (teamGF[m.home]||0) + m.hG;
+        teamGA[m.home] = (teamGA[m.home]||0) + m.aG;
         if (!teamResults[m.away]) teamResults[m.away] = [];
-        teamResults[m.away].push({ result:aR, pts:pts[aR], redCards:m.aRC, opponent:m.home, date:m.date, score:m.aG+"–"+m.hG, goalsFor:m.aG });
-        teamGoals[m.away] = (teamGoals[m.away]||0) + m.aG;
+        teamResults[m.away].push({ result:aR, pts:pts[aR], redCards:m.aRC, opponent:m.home, date:m.date, score:m.aG+"–"+m.hG, goalsFor:m.aG, goalsAgainst:m.hG });
+        teamGF[m.away] = (teamGF[m.away]||0) + m.aG;
+        teamGA[m.away] = (teamGA[m.away]||0) + m.hG;
       }
-      const scores = {}, breakdown = {}, goalsScored = {};
+      const scores = {}, breakdown = {}, goalsScored = {}, goalsAllowed = {};
       for (const player of PLAYERS) {
-        let total = 0, goals = 0;
+        let total = 0, gf = 0, ga = 0;
         breakdown[player.name] = [];
         for (const team of player.teams) {
           for (const r of (teamResults[team] || [])) {
             const rcPts = r.redCards * -0.5;
             total += r.pts + rcPts;
-            goals += r.goalsFor;
+            gf += r.goalsFor;
+            ga += r.goalsAgainst;
             breakdown[player.name].push({ team, ...r, rcPts });
           }
         }
         scores[player.name] = Math.round(total * 10) / 10;
-        goalsScored[player.name] = goals;
+        goalsScored[player.name] = gf;
+        goalsAllowed[player.name] = ga;
       }
-      return { scores, breakdown, goalsScored };
+      return { scores, breakdown, goalsScored, goalsAllowed };
     }
 
     function App() {
       const [selected, setSelected] = useState(null);
-      const { scores, breakdown, goalsScored } = calcScores(MATCHES);
+      const { scores, breakdown, goalsScored, goalsAllowed } = calcScores(MATCHES);
       const ranked = PLAYERS
-        .map(p => ({ ...p, pts: scores[p.name], goals: goalsScored[p.name] }))
-        .sort((a,b) => b.pts - a.pts || b.goals - a.goals || a.name.localeCompare(b.name))
+        .map(p => ({ ...p, pts: scores[p.name], gf: goalsScored[p.name], ga: goalsAllowed[p.name] }))
+        .sort((a,b) => b.pts - a.pts || b.gf - a.gf || a.ga - b.ga || a.name.localeCompare(b.name))
         .map((p,i,arr) => ({
           ...p,
           rank: i+1,
@@ -133,11 +141,11 @@
           </div>
           <div style={{maxWidth:500,margin:"0 auto",padding:"16px 14px 40px"}}>
             <div style={{background:"rgba(251,191,36,.08)",border:"1px solid rgba(251,191,36,.2)",borderRadius:10,padding:"10px 14px",fontSize:12,color:"#fbbf24",marginBottom:16,lineHeight:1.5}}>
-              📌 Win = 3 · Draw = 1 · Loss = 0 · Red Card = −0.5 · Ties broken by total goals scored ⚽ · Tap a player for breakdown
+              📌 Win = 3 · Draw = 1 · Loss = 0 · Red Card = −0.5<br/>Ties: 1️⃣ most goals scored ⚽ → 2️⃣ fewest goals allowed 🛡️ · Tap a player for breakdown
             </div>
             <div style={{background:"rgba(255,255,255,.05)",borderRadius:14,border:"1px solid rgba(255,255,255,.09)",overflow:"hidden",marginBottom:18}}>
-              <div style={{padding:"11px 16px",background:"rgba(251,191,36,.08)",borderBottom:"1px solid rgba(251,191,36,.15)",fontSize:11,fontWeight:700,letterSpacing:3,textTransform:"uppercase",color:"#fbbf24",display:"flex",justifyContent:"space-between"}}>
-                <span>Standings</span><span style={{color:"#6a8ab0"}}>PTS · ⚽GF</span>
+              <div style={{padding:"11px 16px",background:"rgba(251,191,36,.08)",borderBottom:"1px solid rgba(251,191,36,.15)",fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",color:"#fbbf24",display:"flex",justifyContent:"space-between"}}>
+                <span>Standings</span><span style={{color:"#6a8ab0"}}>PTS · ⚽GF · 🛡️GA</span>
               </div>
               {ranked.map((p,i) => {
                 const isSel = selected === p.name;
@@ -149,9 +157,9 @@
                         <div style={{fontSize:15,fontWeight:700,color:isSel?"#fbbf24":"#e2eaf8"}}>{p.name}</div>
                         <div style={{fontSize:11,color:"#4a6a8a",marginTop:2}}>{p.teams.map(t=>FLAGS[t]||"🏳").join(" ")} {p.teams.join(" · ")}</div>
                       </div>
-                      <div style={{textAlign:"right",minWidth:54}}>
+                      <div style={{textAlign:"right",minWidth:68}}>
                         <div style={{fontSize:22,fontWeight:800,color:p.pts>0?"#fbbf24":"#3a5a7a",lineHeight:1}}>{p.pts}</div>
-                        <div style={{fontSize:11,color:p.tiedOnPts?"#4ade80":"#4a6a8a",marginTop:3,fontWeight:p.tiedOnPts?700:400}}>⚽{p.goals}</div>
+                        <div style={{fontSize:11,color:p.tiedOnPts?"#4ade80":"#4a6a8a",marginTop:3,fontWeight:p.tiedOnPts?700:400}}>⚽{p.gf} · 🛡️{p.ga}</div>
                       </div>
                     </div>
                     {isSel && (
@@ -173,7 +181,7 @@
                           </div>
                         ))}
                         <div style={{display:"flex",justifyContent:"space-between",padding:"8px 20px 10px",borderTop:"1px solid rgba(255,255,255,.08)",fontSize:12,color:"#6a8ab0"}}>
-                          <span>Total · ⚽ {p.goals} goals</span><span style={{fontWeight:800,color:"#fbbf24",fontSize:15}}>{p.pts} pts</span>
+                          <span>⚽ {p.gf} scored · 🛡️ {p.ga} allowed</span><span style={{fontWeight:800,color:"#fbbf24",fontSize:15}}>{p.pts} pts</span>
                         </div>
                       </div>
                     )}
