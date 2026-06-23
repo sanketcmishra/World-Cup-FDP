@@ -33,7 +33,7 @@
     ];
 
     // ── UPDATE THIS SECTION EACH NIGHT ──
-    const LAST_UPDATED = "Jun 18 · 11:59 PM ET · Matchday 2 underway (Groups A & B done)";
+    const LAST_UPDATED = "Jun 22 · 10 PM ET · MD2 done exc. Jordan-Algeria (live)";
 
     const MATCHES = [
       { date: "Jun 11", home: "Mexico",        away: "South Africa",          hG: 2, aG: 0, hRC: 1, aRC: 2 },
@@ -64,22 +64,37 @@
       { date: "Jun 18", home: "Mexico",        away: "South Korea",           hG: 1, aG: 0, hRC: 0, aRC: 0 },
       { date: "Jun 18", home: "Switzerland",   away: "Bosnia and Herzegovina",hG: 4, aG: 1, hRC: 0, aRC: 0 },
       { date: "Jun 18", home: "Canada",        away: "Qatar",                 hG: 6, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 19", home: "United States", away: "Australia",             hG: 2, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 19", home: "Morocco",       away: "Scotland",              hG: 1, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 19", home: "Brazil",        away: "Haiti",                 hG: 3, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 19", home: "Paraguay",      away: "Turkey",                hG: 1, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 20", home: "Germany",       away: "Ivory Coast",           hG: 2, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 20", home: "Ecuador",       away: "Curacao",               hG: 0, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 20", home: "Netherlands",   away: "Sweden",                hG: 5, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 20", home: "Japan",         away: "Tunisia",               hG: 4, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 21", home: "Belgium",       away: "Iran",                  hG: 0, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 21", home: "Egypt",         away: "New Zealand",           hG: 3, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 21", home: "Spain",         away: "Saudi Arabia",          hG: 4, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 21", home: "Uruguay",       away: "Cape Verde",            hG: 2, aG: 2, hRC: 0, aRC: 0 },
+      { date: "Jun 22", home: "France",        away: "Iraq",                  hG: 3, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 22", home: "Norway",        away: "Senegal",               hG: 3, aG: 2, hRC: 0, aRC: 0 },
+      { date: "Jun 22", home: "Argentina",     away: "Austria",               hG: 2, aG: 0, hRC: 0, aRC: 0 },
     ];
     // ── END UPDATE SECTION ──
 
     const FLAGS = {
       "Mexico":"🇲🇽","South Africa":"🇿🇦","South Korea":"🇰🇷","Czechia":"🇨🇿",
       "Canada":"🇨🇦","Bosnia and Herzegovina":"🇧🇦","Qatar":"🇶🇦","Switzerland":"🇨🇭",
-      "Brazil":"🇧🇷","Morocco":"🇲🇦","Haiti":"🇭🇹","Scotland":"🏴",
+      "Brazil":"🇧🇷","Morocco":"🇲🇦","Haiti":"🇭🇹","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿",
       "United States":"🇺🇸","Paraguay":"🇵🇾","Australia":"🇦🇺","Turkey":"🇹🇷",
-      "Germany":"🇩🇪","Curacao":"🇨🇼","Ivory Coast":"🇨🇮","Ecuador":"🇪🇨",
+      "Germany":"🇩🇪","Curacao":"🇨🇼","Ivory Coast":"🇨","Ecuador":"🇪🇨",
       "Netherlands":"🇳🇱","Japan":"🇯🇵","Sweden":"🇸🇪","Tunisia":"🇹🇳",
       "Belgium":"🇧🇪","Egypt":"🇪🇬","Iran":"🇮🇷","New Zealand":"🇳",
       "Spain":"🇪🇸","Cape Verde":"🇨🇻","Saudi Arabia":"🇸🇦","Uruguay":"🇺🇾",
       "France":"🇫🇷","Senegal":"🇸🇳","Iraq":"🇮🇶","Norway":"🇳🇴",
-      "Argentina":"🇦","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
-      "Portugal":"🇵🇹","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
-      "England":"🏴󠁧","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
+      "Argentina":"🇦🇷","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
+      "Portugal":"🇵","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
+      "England":"🏴󠁧󠁢","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
     };
 
     function calcScores(matchList) {
