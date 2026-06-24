@@ -33,7 +33,7 @@
     ];
 
     // ── UPDATE THIS SECTION EACH NIGHT ──
-    const LAST_UPDATED = "Jun 22 · 10 PM ET · MD2 done exc. Jordan-Algeria (live)";
+    const LAST_UPDATED = "Jun 23 · 11:59 PM ET · Matchday 2 COMPLETE — all 48 teams played twice";
 
     const MATCHES = [
       { date: "Jun 11", home: "Mexico",        away: "South Africa",          hG: 2, aG: 0, hRC: 1, aRC: 2 },
@@ -79,6 +79,11 @@
       { date: "Jun 22", home: "France",        away: "Iraq",                  hG: 3, aG: 0, hRC: 0, aRC: 0 },
       { date: "Jun 22", home: "Norway",        away: "Senegal",               hG: 3, aG: 2, hRC: 0, aRC: 0 },
       { date: "Jun 22", home: "Argentina",     away: "Austria",               hG: 2, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 22", home: "Algeria",       away: "Jordan",                hG: 2, aG: 1, hRC: 0, aRC: 0 },
+      { date: "Jun 23", home: "Portugal",      away: "Uzbekistan",            hG: 5, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 23", home: "Colombia",      away: "DR Congo",              hG: 1, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 23", home: "England",       away: "Ghana",                 hG: 0, aG: 0, hRC: 0, aRC: 0 },
+      { date: "Jun 23", home: "Croatia",       away: "Panama",                hG: 1, aG: 0, hRC: 0, aRC: 0 },
     ];
     // ── END UPDATE SECTION ──
 
@@ -87,14 +92,14 @@
       "Canada":"🇨🇦","Bosnia and Herzegovina":"🇧🇦","Qatar":"🇶🇦","Switzerland":"🇨🇭",
       "Brazil":"🇧🇷","Morocco":"🇲🇦","Haiti":"🇭🇹","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿",
       "United States":"🇺🇸","Paraguay":"🇵🇾","Australia":"🇦🇺","Turkey":"🇹🇷",
-      "Germany":"🇩🇪","Curacao":"🇨🇼","Ivory Coast":"🇨","Ecuador":"🇪🇨",
+      "Germany":"🇩🇪","Curacao":"🇨","Ivory Coast":"🇨🇮","Ecuador":"🇪🇨",
       "Netherlands":"🇳🇱","Japan":"🇯🇵","Sweden":"🇸🇪","Tunisia":"🇹🇳",
-      "Belgium":"🇧🇪","Egypt":"🇪🇬","Iran":"🇮🇷","New Zealand":"🇳",
+      "Belgium":"🇧🇪","Egypt":"🇪🇬","Iran":"🇮🇷","New Zealand":"🇳🇿",
       "Spain":"🇪🇸","Cape Verde":"🇨🇻","Saudi Arabia":"🇸🇦","Uruguay":"🇺🇾",
       "France":"🇫🇷","Senegal":"🇸🇳","Iraq":"🇮🇶","Norway":"🇳🇴",
       "Argentina":"🇦🇷","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
-      "Portugal":"🇵","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
-      "England":"🏴󠁧󠁢","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
+      "Portugal":"🇵🇹","DR Congo":"🇨🇩","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
+      "England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Croatia":"🇭🇷","Ghana":"🇬🇭","Panama":"🇵🇦",
     };
 
     function calcScores(matchList) {
@@ -156,7 +161,7 @@
           </div>
           <div style={{maxWidth:500,margin:"0 auto",padding:"16px 14px 40px"}}>
             <div style={{background:"rgba(251,191,36,.08)",border:"1px solid rgba(251,191,36,.2)",borderRadius:10,padding:"10px 14px",fontSize:12,color:"#fbbf24",marginBottom:16,lineHeight:1.5}}>
-              📌 Win = 3 · Draw = 1 · Loss = 0 · Red Card = −0.5<br/>Ties: 1️⃣ most goals scored ⚽ → 2️⃣ fewest goals allowed 🛡️ · Tap a player for breakdown
+              📌 Win = 3 · Draw = 1 · Loss = 0 · Red Card = −0.5<br/>Ties: 1 most goals scored ⚽ → 2️⃣ fewest goals allowed 🛡️ · Tap a player for breakdown
             </div>
             <div style={{background:"rgba(255,255,255,.05)",borderRadius:14,border:"1px solid rgba(255,255,255,.09)",overflow:"hidden",marginBottom:18}}>
               <div style={{padding:"11px 16px",background:"rgba(251,191,36,.08)",borderBottom:"1px solid rgba(251,191,36,.15)",fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",color:"#fbbf24",display:"flex",justifyContent:"space-between"}}>
